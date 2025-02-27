@@ -6,9 +6,10 @@ import { useEffect, useState } from "react";
 import homeBg from "/home-bg.webp";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import mockedData from "../assets/mock.js";
 
 export default function HomePage() {
-  const [providers, setProviders] = useState();
+  const [providers, setProviders] = useState(mockedData);
   const [filteredProviders, setFilteredProviders] = useState();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -17,7 +18,7 @@ export default function HomePage() {
     async function fetchProviders() {
       const {data, error} = await getProvidersByFilters();
       setError(error);
-      setProviders(data);
+      // setProviders(data);
       setLoading(false);
     }
     fetchProviders();

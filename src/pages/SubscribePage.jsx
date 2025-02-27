@@ -33,17 +33,12 @@ export default function SubscribePage() {
 
   const navigate = useNavigate();
 
-  //retrieve plan from url query
-  const plan = new URLSearchParams(window.location.search)
-    .get("plan")
-    ?.toUpperCase();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const registerForm = new FormData(e.target);
 
     const formData = {
-      plan: registerForm.get("plan"),
+      // add plan field
       name: registerForm.get("name"),
       email: registerForm.get("email"),
       phoneNumber: registerForm.get("phoneNumber"),
@@ -51,9 +46,9 @@ export default function SubscribePage() {
       password: registerForm.get("password"),
     };
 
-    const { plan, name, email, phoneNumber, address, password } = formData;
+    const { name, email, phoneNumber, address, password } = formData;
 
-    if (!plan || !name || !email || !phoneNumber || !address || !password) {
+    if (!name || !email || !phoneNumber || !address || !password) {
       toast.error("Veuillez remplir tous les champs");
       return;
     }
@@ -77,21 +72,7 @@ export default function SubscribePage() {
 
     try {
       setLoading(true);
-
-      if (plan === "ESSENTIAL" || plan === "PRO") {
-        await axios.post(PRO_ENDPOINT, formData, {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        });
-        window.location.href = PRO_URL;
-      }
-      if (plan === "ENTERPRISE") {
-        await axios.post(SALON_ENDPOINT, formData, {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        });
-        window.location.href = SALON_URL;
-      }
+      // post to pro or salon endpoint based on the plan
     } catch (error) {
       console.log(error);
       if (error.response.status === 409) {
@@ -156,21 +137,7 @@ export default function SubscribePage() {
             />
           </div>
         </div>
-        <div>
-          <Label htmlFor="plan">Offre</Label>
-          <Select id="plan" name="plan" defaultValue={plan}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Sélectionner" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="ESSENTIAL">Essentiel</SelectItem>
-                <SelectItem value="PRO">Pro</SelectItem>
-                <SelectItem value="ENTERPRISE">Entreprise</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
+
         <Button type="submit" disabled={loading} className="w-full">
           {loading ? <Loader2 className="animate-spin" /> : "Créer un compte"}
         </Button>
